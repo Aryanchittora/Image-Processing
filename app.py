@@ -1,10 +1,12 @@
 import os
 import cv2
 import numpy as np
-from flask import Flask, flash, request, redirect, url_for, render_template
+from flask import Flask, flash, request, redirect, url_for, render_template, send_file
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+
+filename = ''
 
 @app.route('/')
 def upload_form():
@@ -13,6 +15,8 @@ def upload_form():
 
 @app.route('/', methods=['POST'])
 def upload_image():
+    global filename
+
     operation_selection = request.form['image_type_selection']
     image_file = request.files['file']
     filename = secure_filename(image_file.filename)
@@ -58,7 +62,7 @@ def image_sketch(decode_array_to_img):
 # Starts Oil Effect function From here
 def oil(decode):
     oil_paint = cv2.xphoto.oilPainting(decode, 7, 1)
-    status, output = cv2.imencode('.PNG', oil_paint)
+    status, output = cv2.imencode('converted.PNG', oil_paint)
 
     return output
 
@@ -71,7 +75,11 @@ def rgb(decode):
     return output
 
 # Ends here
-
+@app.route('/download')
+def download_file():
+    img_path = 'static/'+filename
+    
+    return send_file(img_path, as_attachment=True)
 
 @app.route('/display/<filename>')
 def display_image(filename):
