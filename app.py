@@ -62,7 +62,7 @@ def image_sketch(decode_array_to_img):
 # Starts Oil Effect function From here
 def oil(decode):
     oil_paint = cv2.xphoto.oilPainting(decode, 7, 1)
-    status, output = cv2.imencode('converted.PNG', oil_paint)
+    status, output = cv2.imencode('.PNG', oil_paint)
 
     return output
 
